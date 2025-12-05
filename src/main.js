@@ -485,7 +485,7 @@ function frameBox(box) {
   const maxDim = Math.max(size.x, size.y, size.z);
   const fovRad = (camera.fov * Math.PI) / 180;
   let cameraDist = maxDim / (2 * Math.tan(fovRad / 2));
-  cameraDist *= 1.5;
+  cameraDist *= 2.5;
 
   camera.position.copy(
     new THREE.Vector3(1, 1, 1).normalize().multiplyScalar(cameraDist),
