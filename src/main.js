@@ -11,37 +11,37 @@ app.innerHTML = `
     <div class="hero-section">
       <div class="hero-content">
         <h1 class="hero-title">Utopia 3D Studio</h1>
-        <p class="hero-subtitle">Professional STL Viewer & 3D Editor</p>
+        <p class="hero-subtitle">Visionneuse STL professionnelle & Éditeur 3D</p>
         <p class="hero-description">
-          Upload, visualize, and manipulate STL files with precision. Calculate volumes, dimensions,
-          and export your creations. Perfect for 3D printing, CAD analysis, and creative projects.
+          Importez, visualisez et manipulez des fichiers STL avec précision. Calculez les volumes, les dimensions,
+          et exportez vos créations. Parfait pour l’impression 3D, l’analyse CAD et les projets créatifs.
         </p>
 
         <div class="hero-features">
           <div class="feature-item">
             <span class="feature-icon">📁</span>
-            <span>Multi-file STL Upload</span>
+            <span>Importation multi-fichiers STL</span>
           </div>
           <div class="feature-item">
             <span class="feature-icon">📐</span>
-            <span>Precise Measurements</span>
+            <span>Mesures précises</span>
           </div>
           <div class="feature-item">
             <span class="feature-icon">🎨</span>
-            <span>3D Manipulation Tools</span>
+            <span>Outils de manipulation 3D</span>
           </div>
           <div class="feature-item">
             <span class="feature-icon">📱</span>
-            <span>Mobile Responsive</span>
+            <span>Adapté au mobile</span>
           </div>
         </div>
 
         <div class="hero-actions">
           <button id="startButton" class="btn btn-primary btn-large">
-            Start Creating
+            Commencer la création
           </button>
           <button id="loadSamplesButton" class="btn btn-ghost btn-large">
-            Try Sample Files
+            Essayer des fichiers exemples
           </button>
         </div>
       </div>
@@ -65,56 +65,56 @@ app.innerHTML = `
 
       <div class="sidebar-section">
         <div class="section-header" data-section="load">
-          <span class="section-title">Load STL Files</span>
+          <span class="section-title">Charger des fichiers STL</span>
           <span class="section-toggle">▲</span>
         </div>
         <div class="section-content expanded" data-content="load">
           <input type="file" id="fileInput" accept=".stl" multiple />
           <div class="drag-drop-zone" id="dragDropZone">
-            <span class="drag-drop-text">Drag & drop STL files here</span>
-            <span class="drag-drop-subtext">or click to browse</span>
+            <span class="drag-drop-text">Glissez-déposez les fichiers STL ici</span>
+            <span class="drag-drop-subtext">ou cliquez pour parcourir</span>
           </div>
           <div id="loadingIndicator" class="loading-indicator" style="display: none;">
             <div class="loading-spinner"></div>
-            <span>Loading STL files...</span>
+            <span>Chargement des fichiers STL...</span>
           </div>
         </div>
       </div>
 
       <div class="sidebar-section">
         <div class="section-header" data-section="recent">
-          <span class="section-title">Recent Files</span>
+          <span class="section-title">Fichiers récents</span>
           <span class="section-toggle">▼</span>
         </div>
         <div class="section-content" data-content="recent">
           <div id="recentFiles" class="recent-files-list">
-            <div class="empty-state">No recent files</div>
+            <div class="empty-state">Aucun fichier récent</div>
           </div>
         </div>
       </div>
 
       <div class="sidebar-section">
         <div class="section-header" data-section="create">
-          <span class="section-title">Create Shapes</span>
+          <span class="section-title">Créer des formes</span>
           <span class="section-toggle">▼</span>
         </div>
         <div class="section-content" data-content="create">
           <div class="field-row">
             <select id="primitiveType" class="select">
-              <option value="box">Box</option>
-              <option value="sphere">Sphere</option>
-              <option value="cylinder">Cylinder</option>
-              <option value="plane">Plane</option>
+              <option value="box">Boîte</option>
+              <option value="sphere">Sphère</option>
+              <option value="cylinder">Cylindre</option>
+              <option value="plane">Plan</option>
             </select>
-            <button id="addPrimitive" class="btn btn-primary">Add</button>
+            <button id="addPrimitive" class="btn btn-primary">Ajouter</button>
           </div>
-          <button id="generateSample" class="btn btn-ghost btn-full">Generate Sample</button>
+          <button id="generateSample" class="btn btn-ghost btn-full">Générer un exemple</button>
         </div>
       </div>
 
       <div class="sidebar-section">
         <div class="section-header" data-section="objects">
-          <span class="section-title">Scene Objects</span>
+          <span class="section-title">Objets de la scène</span>
           <span class="section-toggle">▲</span>
         </div>
         <div class="section-content expanded" data-content="objects">
@@ -124,21 +124,21 @@ app.innerHTML = `
 
       <div class="sidebar-section">
         <div class="section-header" data-section="properties">
-          <span class="section-title">Properties</span>
+          <span class="section-title">Propriétés</span>
           <span class="section-toggle">▲</span>
         </div>
         <div class="section-content expanded" data-content="properties">
           <div class="stats-grid">
             <div>
-              <div class="stats-grid-item-label">Width</div>
+              <div class="stats-grid-item-label">Largeur</div>
               <div id="stat-width" class="stats-grid-item-value">-</div>
             </div>
             <div>
-              <div class="stats-grid-item-label">Height</div>
+              <div class="stats-grid-item-label">Hauteur</div>
               <div id="stat-height" class="stats-grid-item-value">-</div>
             </div>
             <div>
-              <div class="stats-grid-item-label">Depth</div>
+              <div class="stats-grid-item-label">Profondeur</div>
               <div id="stat-depth" class="stats-grid-item-value">-</div>
             </div>
             <div>
@@ -146,55 +146,53 @@ app.innerHTML = `
               <div id="stat-volume" class="stats-grid-item-value">-</div>
             </div>
             <div>
-              <div class="stats-grid-item-label">Polygons</div>
+              <div class="stats-grid-item-label">Polygones</div>
               <div id="stat-polygons" class="stats-grid-item-value">-</div>
             </div>
             <div>
-              <div class="stats-grid-item-label">File Size</div>
+              <div class="stats-grid-item-label">Taille du fichier</div>
               <div id="stat-filesize" class="stats-grid-item-value">-</div>
             </div>
           </div>
 
           <div class="field-row">
-            <span class="field-label">Color</span>
+            <span class="field-label">Couleur</span>
             <input type="color" id="colorInput" value="#4caf50" class="color-input" />
           </div>
 
           <div class="field-row">
-            <span class="field-label">Scale</span>
+            <span class="field-label">Échelle</span>
             <input type="range" id="scaleInput" min="0.1" max="3" step="0.1" value="1" class="slider" />
             <span id="scaleValue">1.0</span>
           </div>
 
           <div class="control-buttons">
-            <button id="resetView" class="btn btn-ghost">Frame View</button>
-            <button id="deleteObject" class="btn btn-danger">Delete</button>
-            <button id="clearAll" class="btn btn-danger">Clear All</button>
-            <button id="exportStl" class="btn btn-primary btn-full">Export STL</button>
+            <button id="resetView" class="btn btn-ghost">Cadrer la vue</button>
+            <button id="deleteObject" class="btn btn-danger">Supprimer</button>
+            <button id="clearAll" class="btn btn-danger">Tout effacer</button>
+            <button id="exportStl" class="btn btn-primary btn-full">Exporter STL</button>
           </div>
         </div>
       </div>
 
       <div class="sidebar-section">
         <div class="section-header" data-section="tools">
-          <span class="section-title">Tools</span>
+          <span class="section-title">Outils</span>
           <span class="section-toggle">▼</span>
         </div>
         <div class="section-content" data-content="tools">
           <div class="radio-list">
             <label class="radio-item">
               <input type="radio" name="toolMode" value="select" checked />
-              <span>Select / drag</span>
+              <span>Sélection / déplacement</span>
             </label>
             <label class="radio-item">
               <input type="radio" name="toolMode" value="draw" />
-              <span>Draw lines</span>
+              <span>Dessiner des lignes</span>
             </label>
           </div>
         </div>
       </div>
-
-
     </div>
 
     <div class="main-content">
@@ -202,56 +200,56 @@ app.innerHTML = `
         <canvas id="viewerCanvas"></canvas>
         <div class="viewer-overlay">
           <div class="viewer-info">
-            <span id="objectCount">0 objects</span>
-            <span id="cameraInfo">Camera: Home</span>
+            <span id="objectCount">0 objets</span>
+            <span id="cameraInfo">Caméra : Accueil</span>
           </div>
 
           <div class="top-controls">
             <div class="rotation-controls">
-              <span class="control-label">Orient:</span>
-              <button id="rotateUp" type="button" class="btn btn-ghost btn-icon" title="Rotate Up">↑</button>
-              <button id="rotateDown" type="button" class="btn btn-ghost btn-icon" title="Rotate Down">↓</button>
-              <button id="rotateLeft" type="button" class="btn btn-ghost btn-icon" title="Rotate Left">⟲</button>
-              <button id="rotateRight" type="button" class="btn btn-ghost btn-icon" title="Rotate Right">⟳</button>
+              <span class="control-label">Orienter :</span>
+              <button id="rotateUp" type="button" class="btn btn-ghost btn-icon" title="Tourner vers le haut">↑</button>
+              <button id="rotateDown" type="button" class="btn btn-ghost btn-icon" title="Tourner vers le bas">↓</button>
+              <button id="rotateLeft" type="button" class="btn btn-ghost btn-icon" title="Tourner à gauche">⟲</button>
+              <button id="rotateRight" type="button" class="btn btn-ghost btn-icon" title="Tourner à droite">⟳</button>
             </div>
 
             <div class="camera-controls-compact">
-              <span class="control-label">View:</span>
-              <button id="viewTop" class="btn btn-ghost btn-icon" title="Top View">⬆</button>
-              <button id="viewFront" class="btn btn-ghost btn-icon" title="Front View">↗</button>
-              <button id="viewRight" class="btn btn-ghost btn-icon" title="Right View">➡</button>
-              <button id="viewLeft" class="btn btn-ghost btn-icon" title="Left View">⬅</button>
-              <button id="viewHome" class="btn btn-primary btn-icon" title="Home View">🏠</button>
-              <button id="viewBack" class="btn btn-ghost btn-icon" title="Back View">↙</button>
-              <button id="viewBottom" class="btn btn-ghost btn-icon" title="Bottom View">⬇</button>
-              <button id="viewIso" class="btn btn-ghost btn-icon" title="Isometric View">🔄</button>
-              <button id="resetCamera" class="btn btn-ghost btn-icon" title="Reset Camera">⭕</button>
+              <span class="control-label">Vue :</span>
+              <button id="viewTop" class="btn btn-ghost btn-icon" title="Vue de dessus">⬆</button>
+              <button id="viewFront" class="btn btn-ghost btn-icon" title="Vue de face">↗</button>
+              <button id="viewRight" class="btn btn-ghost btn-icon" title="Vue droite">➡</button>
+              <button id="viewLeft" class="btn btn-ghost btn-icon" title="Vue gauche">⬅</button>
+              <button id="viewHome" class="btn btn-primary btn-icon" title="Vue par défaut">🏠</button>
+              <button id="viewBack" class="btn btn-ghost btn-icon" title="Vue arrière">↙</button>
+              <button id="viewBottom" class="btn btn-ghost btn-icon" title="Vue dessous">⬇</button>
+              <button id="viewIso" class="btn btn-ghost btn-icon" title="Vue isométrique">🔄</button>
+              <button id="resetCamera" class="btn btn-ghost btn-icon" title="Réinitialiser la caméra">⭕</button>
             </div>
 
             <div class="scene-controls">
-              <button id="clearAllTop" class="btn btn-danger btn-icon" title="Clear All Objects">🧹</button>
+              <button id="clearAllTop" class="btn btn-danger btn-icon" title="Effacer tous les objets">🧹</button>
             </div>
 
             <div class="control-instructions">
               <div class="control-item">
-                <span class="control-key">Left Drag:</span>
-                <span class="control-desc">Rotate view</span>
+                <span class="control-key">Glisser gauche :</span>
+                <span class="control-desc">Tourner la vue</span>
               </div>
               <div class="control-item">
-                <span class="control-key">Right Drag:</span>
-                <span class="control-desc">Pan view</span>
+                <span class="control-key">Glisser droit :</span>
+                <span class="control-desc">Déplacer la vue</span>
               </div>
               <div class="control-item">
-                <span class="control-key">Scroll:</span>
+                <span class="control-key">Molette :</span>
                 <span class="control-desc">Zoom</span>
               </div>
               <div class="control-item">
-                <span class="control-key">Shift+Drag:</span>
-                <span class="control-desc">Move object</span>
+                <span class="control-key">Shift+Glisser :</span>
+                <span class="control-desc">Déplacer l’objet</span>
               </div>
               <div class="control-item">
-                <span class="control-key">Shift+Ctrl+Drag:</span>
-                <span class="control-desc">Rotate object</span>
+                <span class="control-key">Shift+Ctrl+Glisser :</span>
+                <span class="control-desc">Tourner l’objet</span>
               </div>
             </div>
           </div>
@@ -261,12 +259,13 @@ app.innerHTML = `
       <div id="dragOverlay" class="drag-overlay" style="display: none;">
         <div class="drag-overlay-content">
           <div class="drag-overlay-icon">📁</div>
-          <div class="drag-overlay-text">Drop STL files here</div>
-          <div class="drag-overlay-subtext">Multiple files supported</div>
+          <div class="drag-overlay-text">Déposez les fichiers STL ici</div>
+          <div class="drag-overlay-subtext">Plusieurs fichiers pris en charge</div>
         </div>
       </div>
     </div>
   </div>
+
 `;
 
 // Prevent double initialization
