@@ -475,26 +475,20 @@ function updateStatsFromBox(box, mesh) {
   }
 }
 
-function frameBox(box) {
+function frameBox(box) { 
   if (!box) return;
-
   const size = new THREE.Vector3();
   const center = new THREE.Vector3();
-  box.getSize(size);
+  box.getSize(size); 
   box.getCenter(center);
-
-  // Keep current camera distance
-  const currentDistance = camera.position.length();
-
-  // Move camera in same direction but centered on the new object
-  const direction = new THREE.Vector3(1, 1, 1).normalize();
-
-  camera.position.copy(direction.multiplyScalar(currentDistance));
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fovRad = (camera.fov * Math.PI) / 180;
+  let cameraDist = maxDim / (2 * Math.tan(fovRad / 2));
+  cameraDist *= 2.5;
+  camera.position.copy( new THREE.Vector3(1, 1, 1).normalize().multiplyScalar(cameraDist), );
   camera.position.add(center);
-
   controls.target.copy(center);
-  controls.update();
-}
+  controls.update(); }
 
 
 function getObjectBox(mesh) {
