@@ -219,6 +219,53 @@ body {
     @apply px-3 py-1 bg-dark-900/80 text-sm text-gray-300 rounded-lg border border-white/10 backdrop-blur-sm;
 }
 
+/* Top Controls */
+.top-controls {
+    @apply flex flex-wrap gap-4 items-start mt-4 pointer-events-auto;
+}
+
+.rotation-controls,
+.camera-controls-compact,
+.scene-controls {
+    @apply flex items-center gap-2 px-3 py-2 bg-dark-900/80 rounded-lg border border-white/10 backdrop-blur-sm;
+}
+
+.control-label {
+    @apply text-xs font-medium text-gray-400 mr-1;
+}
+
+.control-instructions {
+    @apply flex flex-wrap gap-2 max-w-sm;
+}
+
+.control-item {
+    @apply flex items-center gap-1 px-2 py-1 bg-dark-900/80 text-xs rounded border border-white/10 backdrop-blur-sm;
+}
+
+.control-key {
+    @apply font-medium text-accent-primary;
+}
+
+.control-desc {
+    @apply text-gray-400;
+}
+
+@media (max-width: 1024px) {
+    .top-controls {
+        @apply flex-col gap-2;
+    }
+
+    .control-instructions {
+        @apply max-w-none;
+    }
+}
+
+@media (max-width: 768px) {
+    .control-instructions {
+        @apply hidden;
+    }
+}
+
 /* ===== Components ===== */
 
 /* Buttons */

@@ -169,6 +169,7 @@ app.innerHTML = `
           <div class="control-buttons">
             <button id="resetView" class="btn btn-ghost">Frame View</button>
             <button id="deleteObject" class="btn btn-danger">Delete</button>
+            <button id="clearAll" class="btn btn-danger">Clear All</button>
             <button id="exportStl" class="btn btn-primary btn-full">Export STL</button>
           </div>
         </div>
@@ -190,67 +191,10 @@ app.innerHTML = `
               <span>Draw lines</span>
             </label>
           </div>
-
-          <div class="field-row">
-            <span class="field-label">Orient</span>
-            <div>
-              <button id="rotateUp" type="button" class="btn btn-ghost btn-icon">↑</button>
-              <button id="rotateDown" type="button" class="btn btn-ghost btn-icon">↓</button>
-              <button id="rotateLeft" type="button" class="btn btn-ghost btn-icon">⟲</button>
-              <button id="rotateRight" type="button" class="btn btn-ghost btn-icon">⟳</button>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div class="sidebar-section">
-        <div class="section-header" data-section="controls">
-          <span class="section-title">Camera Controls</span>
-          <span class="section-toggle">▼</span>
-        </div>
-        <div class="section-content" data-content="controls">
-          <div class="control-info">
-            <div class="control-item">
-              <span class="control-key">Left Drag</span>
-              <span class="control-desc">Rotate view</span>
-            </div>
-            <div class="control-item">
-              <span class="control-key">Right Drag</span>
-              <span class="control-desc">Pan view</span>
-            </div>
-            <div class="control-item">
-              <span class="control-key">Scroll</span>
-              <span class="control-desc">Zoom in/out (Fast!)</span>
-            </div>
-            <div class="control-item">
-              <span class="control-key">Shift+Drag</span>
-              <span class="control-desc">Move object up/down</span>
-            </div>
-            <div class="control-item">
-              <span class="control-key">Shift+Ctrl+Drag</span>
-              <span class="control-desc">Rotate object</span>
-            </div>
-          </div>
 
-          <div class="orientation-controls">
-            <div class="orientation-row">
-              <button id="viewTop" class="btn btn-ghost btn-icon" title="Top View">⬆</button>
-              <button id="viewFront" class="btn btn-ghost btn-icon" title="Front View">↗</button>
-              <button id="viewRight" class="btn btn-ghost btn-icon" title="Right View">➡</button>
-            </div>
-            <div class="orientation-row">
-              <button id="viewLeft" class="btn btn-ghost btn-icon" title="Left View">⬅</button>
-              <button id="viewHome" class="btn btn-primary btn-icon" title="Home View">🏠</button>
-              <button id="viewBack" class="btn btn-ghost btn-icon" title="Back View">↙</button>
-            </div>
-            <div class="orientation-row">
-              <button id="viewBottom" class="btn btn-ghost btn-icon" title="Bottom View">⬇</button>
-              <button id="viewIso" class="btn btn-ghost btn-icon" title="Isometric View">🔄</button>
-              <button id="resetCamera" class="btn btn-ghost btn-icon" title="Reset Camera">⭕</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="main-content">
@@ -260,6 +204,56 @@ app.innerHTML = `
           <div class="viewer-info">
             <span id="objectCount">0 objects</span>
             <span id="cameraInfo">Camera: Home</span>
+          </div>
+
+          <div class="top-controls">
+            <div class="rotation-controls">
+              <span class="control-label">Orient:</span>
+              <button id="rotateUp" type="button" class="btn btn-ghost btn-icon" title="Rotate Up">↑</button>
+              <button id="rotateDown" type="button" class="btn btn-ghost btn-icon" title="Rotate Down">↓</button>
+              <button id="rotateLeft" type="button" class="btn btn-ghost btn-icon" title="Rotate Left">⟲</button>
+              <button id="rotateRight" type="button" class="btn btn-ghost btn-icon" title="Rotate Right">⟳</button>
+            </div>
+
+            <div class="camera-controls-compact">
+              <span class="control-label">View:</span>
+              <button id="viewTop" class="btn btn-ghost btn-icon" title="Top View">⬆</button>
+              <button id="viewFront" class="btn btn-ghost btn-icon" title="Front View">↗</button>
+              <button id="viewRight" class="btn btn-ghost btn-icon" title="Right View">➡</button>
+              <button id="viewLeft" class="btn btn-ghost btn-icon" title="Left View">⬅</button>
+              <button id="viewHome" class="btn btn-primary btn-icon" title="Home View">🏠</button>
+              <button id="viewBack" class="btn btn-ghost btn-icon" title="Back View">↙</button>
+              <button id="viewBottom" class="btn btn-ghost btn-icon" title="Bottom View">⬇</button>
+              <button id="viewIso" class="btn btn-ghost btn-icon" title="Isometric View">🔄</button>
+              <button id="resetCamera" class="btn btn-ghost btn-icon" title="Reset Camera">⭕</button>
+            </div>
+
+            <div class="scene-controls">
+              <button id="clearAllTop" class="btn btn-danger btn-icon" title="Clear All Objects">🧹</button>
+            </div>
+
+            <div class="control-instructions">
+              <div class="control-item">
+                <span class="control-key">Left Drag:</span>
+                <span class="control-desc">Rotate view</span>
+              </div>
+              <div class="control-item">
+                <span class="control-key">Right Drag:</span>
+                <span class="control-desc">Pan view</span>
+              </div>
+              <div class="control-item">
+                <span class="control-key">Scroll:</span>
+                <span class="control-desc">Zoom</span>
+              </div>
+              <div class="control-item">
+                <span class="control-key">Shift+Drag:</span>
+                <span class="control-desc">Move object</span>
+              </div>
+              <div class="control-item">
+                <span class="control-key">Shift+Ctrl+Drag:</span>
+                <span class="control-desc">Rotate object</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -310,6 +304,8 @@ const canvas = document.getElementById("viewerCanvas");
 const fileInput = document.getElementById("fileInput");
 const resetButton = document.getElementById("resetView");
 const deleteButton = document.getElementById("deleteObject");
+const clearAllButton = document.getElementById("clearAll");
+const clearAllTopButton = document.getElementById("clearAllTop");
 const exportButton = document.getElementById("exportStl");
 const widthEl = document.getElementById("stat-width");
 const heightEl = document.getElementById("stat-height");
@@ -1002,6 +998,55 @@ function setupEventListeners() {
     updateSelectionUI();
     showNotification("🗑️ Object deleted", "info");
   });
+
+  // Shared function to clear all objects
+  function clearAllObjects() {
+    if (objects.length === 0) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to remove all ${objects.length} objects? This cannot be undone.`,
+    );
+    if (!confirmed) return;
+
+    // Remove all objects from the scene and dispose of their resources
+    objects.forEach((obj) => {
+      const mesh = obj.mesh;
+      scene.remove(mesh);
+
+      // Dispose geometry
+      if (mesh.geometry && typeof mesh.geometry.dispose === "function") {
+        mesh.geometry.dispose();
+      }
+
+      // Dispose materials
+      if (mesh.material) {
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach(
+            (m) => m && typeof m.dispose === "function" && m.dispose(),
+          );
+        } else if (typeof mesh.material.dispose === "function") {
+          mesh.material.dispose();
+        }
+      }
+    });
+
+    // Clear the objects array and reset selection
+    objects.length = 0;
+    selectedId = null;
+    nextId = 1;
+
+    // Update UI
+    refreshObjectList();
+    updateSelectionUI();
+
+    // Reset camera to default position
+    setCameraView(120, 120, 120, "Home");
+
+    showNotification("🧹 All objects cleared", "success");
+  }
+
+  clearAllButton.addEventListener("click", clearAllObjects);
+  clearAllTopButton.addEventListener("click", clearAllObjects);
 
   exportButton.addEventListener("click", () => {
     if (!objects.length) return;
