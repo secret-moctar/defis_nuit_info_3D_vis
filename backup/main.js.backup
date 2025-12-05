@@ -220,7 +220,7 @@ app.innerHTML = `
             </div>
             <div class="control-item">
               <span class="control-key">Scroll</span>
-              <span class="control-desc">Zoom in/out (Fast!)</span>
+              <span class="control-desc">Zoom in/out</span>
             </div>
             <div class="control-item">
               <span class="control-key">Shift+Drag</span>
@@ -275,7 +275,7 @@ app.innerHTML = `
   </div>
 `;
 
-// Prevent double initialization
+// Prevent duplicate initialization
 let isInitialized = false;
 
 // Three.js globals
@@ -285,7 +285,7 @@ let scene, camera, renderer, controls, loader;
 let objects = [];
 let selectedId = null;
 let nextId = 1;
-let currentToolMode = "select";
+let currentToolMode = 'select';
 
 // Mouse interaction
 const raycaster = new THREE.Raycaster();
@@ -301,95 +301,38 @@ let lastClientX = 0;
 let verticalDragFactor = 1;
 
 // Recent files
-let recentFiles = JSON.parse(
-  localStorage.getItem("utopia-recent-files") || "[]",
-);
+let recentFiles = JSON.parse(localStorage.getItem('utopia-recent-files') || '[]');
 
 // DOM elements
-const canvas = document.getElementById("viewerCanvas");
-const fileInput = document.getElementById("fileInput");
-const resetButton = document.getElementById("resetView");
-const deleteButton = document.getElementById("deleteObject");
-const exportButton = document.getElementById("exportStl");
-const widthEl = document.getElementById("stat-width");
-const heightEl = document.getElementById("stat-height");
-const depthEl = document.getElementById("stat-depth");
-const volumeEl = document.getElementById("stat-volume");
-const polygonsEl = document.getElementById("stat-polygons");
-const filesizeEl = document.getElementById("stat-filesize");
-const primitiveTypeSelect = document.getElementById("primitiveType");
-const addPrimitiveButton = document.getElementById("addPrimitive");
-const generateSampleButton = document.getElementById("generateSample");
-const objectListEl = document.getElementById("objectList");
-const colorInput = document.getElementById("colorInput");
-const scaleInput = document.getElementById("scaleInput");
-const scaleValue = document.getElementById("scaleValue");
+const dashboard = document.getElementById('dashboard');
+const workspace = document.getElementById('workspace');
+const startButton = document.getElementById('startButton');
+const loadSamplesButton = document.getElementById('loadSamplesButton');
+const backToDashboard = document.getElementById('backToDashboard');
+
+const canvas = document.getElementById('viewerCanvas');
+const fileInput = document.getElementById('fileInput');
+const resetButton = document.getElementById('resetView');
+const deleteButton = document.getElementById('deleteObject');
+const exportButton = document.getElementById('exportStl');
+const widthEl = document.getElementById('stat-width');
+const heightEl = document.getElementById('stat-height');
+const depthEl = document.getElementById('stat-depth');
+const volumeEl = document.getElementById('stat-volume');
+const polygonsEl = document.getElementById('stat-polygons');
+const filesizeEl = document.getElementById('stat-filesize');
+const primitiveTypeSelect = document.getElementById('primitiveType');
+const addPrimitiveButton = document.getElementById('addPrimitive');
+const generateSampleButton = document.getElementById('generateSample');
+const objectListEl = document.getElementById('objectList');
+const colorInput = document.getElementById('colorInput');
+const scaleInput = document.getElementById('scaleInput');
+const scaleValue = document.getElementById('scaleValue');
 const toolModeInputs = document.querySelectorAll('input[name="toolMode"]');
-const rotateUpButton = document.getElementById("rotateUp");
-const rotateDownButton = document.getElementById("rotateDown");
-const rotateLeftButton = document.getElementById("rotateLeft");
-const rotateRightButton = document.getElementById("rotateRight");
-
-// Initialize Three.js
-function initThreeJS() {
-  if (scene) return; // Prevent double initialization
-
-  const viewerContainer = canvas.parentElement;
-
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x151515);
-
-  const fov = 45;
-  camera = new THREE.PerspectiveCamera(
-    fov,
-    viewerContainer.clientWidth / viewerContainer.clientHeight,
-    0.1,
-    2000,
-  );
-  camera.position.set(120, 120, 120);
-
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(
-    viewerContainer.clientWidth,
-    viewerContainer.clientHeight,
-    false,
-  );
-
-  // Lighting and helpers
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-  scene.add(ambientLight);
-
-  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x222233, 0.6);
-  hemiLight.position.set(0, 1, 0);
-  scene.add(hemiLight);
-
-  const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-  dirLight1.position.set(1, 1, 1);
-  scene.add(dirLight1);
-
-  const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
-  dirLight2.position.set(-1, 0.5, -0.5);
-  scene.add(dirLight2);
-
-  const grid = new THREE.GridHelper(400, 40, 0x444444, 0x222222);
-  grid.position.y = -0.01;
-  scene.add(grid);
-
-  // Enhanced controls with faster zoom
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
-  controls.target.set(0, 0, 0);
-  controls.zoomSpeed = 2.5; // Much faster zoom!
-  controls.rotateSpeed = 1.0;
-  controls.panSpeed = 1.0;
-
-  loader = new STLLoader();
-
-  animate();
-  console.log("Three.js initialized");
-}
+const rotateUpButton = document.getElementById('rotateUp');
+const rotateDownButton = document.getElementById('rotateDown');
+const rotateLeftButton = document.getElementById('rotateLeft');
+const rotateRightButton = document.getElementById('rotateRight');
 
 // Utility functions
 function toHexColor(color) {
@@ -406,21 +349,9 @@ function calculateVolume(mesh) {
   let volume = 0;
 
   for (let i = 0; i < positions.length; i += 9) {
-    const v1 = new THREE.Vector3(
-      positions[i],
-      positions[i + 1],
-      positions[i + 2],
-    );
-    const v2 = new THREE.Vector3(
-      positions[i + 3],
-      positions[i + 4],
-      positions[i + 5],
-    );
-    const v3 = new THREE.Vector3(
-      positions[i + 6],
-      positions[i + 7],
-      positions[i + 8],
-    );
+    const v1 = new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]);
+    const v2 = new THREE.Vector3(positions[i + 3], positions[i + 4], positions[i + 5]);
+    const v3 = new THREE.Vector3(positions[i + 6], positions[i + 7], positions[i + 8]);
 
     v1.multiply(mesh.scale);
     v2.multiply(mesh.scale);
@@ -434,12 +365,12 @@ function calculateVolume(mesh) {
 
 function updateStatsFromBox(box, mesh) {
   if (!box) {
-    widthEl.textContent = "-";
-    heightEl.textContent = "-";
-    depthEl.textContent = "-";
-    volumeEl.textContent = "-";
-    polygonsEl.textContent = "-";
-    filesizeEl.textContent = "-";
+    widthEl.textContent = '-';
+    heightEl.textContent = '-';
+    depthEl.textContent = '-';
+    volumeEl.textContent = '-';
+    polygonsEl.textContent = '-';
+    filesizeEl.textContent = '-';
     return;
   }
 
@@ -493,11 +424,14 @@ function frameBox(box) {
   cameraDist *= 1.5;
 
   camera.position.copy(
-    new THREE.Vector3(1, 1, 1).normalize().multiplyScalar(cameraDist),
+    new THREE.Vector3(1, 1, 1).normalize().multiplyScalar(cameraDist)
   );
   camera.position.add(center);
   controls.target.copy(center);
   controls.update();
+
+  const cameraInfoEl = document.getElementById('cameraInfo');
+  if (cameraInfoEl) cameraInfoEl.textContent = 'Camera: Framed';
 }
 
 function getObjectBox(mesh) {
@@ -535,28 +469,32 @@ function updateSelectionUI() {
 }
 
 function refreshObjectList() {
-  objectListEl.innerHTML = "";
+  objectListEl.innerHTML = '';
+  const objectCountEl = document.getElementById('objectCount');
+
+  if (objects.length === 0) {
+    objectListEl.innerHTML = '<div class="empty-state">No objects in scene</div>';
+    objectCountEl.textContent = '0 objects';
+    return;
+  }
+
+  objectCountEl.textContent = `${objects.length} object${objects.length !== 1 ? 's' : ''}`;
+
   objects.forEach((obj) => {
-    const li = document.createElement("li");
+    const li = document.createElement('li');
     li.textContent = obj.name;
     li.dataset.id = String(obj.id);
-    li.className = "object-list-item";
+    li.className = 'object-list-item';
     if (obj.id === selectedId) {
-      li.classList.add("selected");
+      li.classList.add('selected');
     }
-    li.addEventListener("click", () => {
+    li.addEventListener('click', () => {
       selectedId = obj.id;
       refreshObjectList();
       updateSelectionUI();
     });
     objectListEl.appendChild(li);
   });
-
-  const objectCountEl = document.getElementById("objectCount");
-  objectCountEl.textContent =
-    objects.length === 0
-      ? "0 objects"
-      : `${objects.length} object${objects.length !== 1 ? "s" : ""}`;
 }
 
 function addObject(mesh, name, isFromFile = false) {
@@ -576,8 +514,8 @@ function addObject(mesh, name, isFromFile = false) {
     addToRecentFiles(name, mesh.userData.fileSize || 0);
   }
 
-  // Single notification only
-  showNotification(`✅ ${name} added`, "success");
+  // Single notification
+  showNotification(`✅ ${name} added`, 'success');
 }
 
 function createMaterial(baseColor) {
@@ -591,13 +529,13 @@ function createMaterial(baseColor) {
 
 function createPrimitiveGeometry(type) {
   switch (type) {
-    case "box":
+    case 'box':
       return new THREE.BoxGeometry(20, 20, 20);
-    case "sphere":
+    case 'sphere':
       return new THREE.SphereGeometry(12, 32, 16);
-    case "cylinder":
+    case 'cylinder':
       return new THREE.CylinderGeometry(10, 10, 24, 32);
-    case "plane":
+    case 'plane':
       return new THREE.PlaneGeometry(40, 40);
     default:
       return new THREE.BoxGeometry(20, 20, 20);
@@ -606,21 +544,21 @@ function createPrimitiveGeometry(type) {
 
 // Notification system (prevent duplicates)
 let currentNotification = null;
-function showNotification(message, type = "info") {
+function showNotification(message, type = 'info') {
   // Remove existing notification
   if (currentNotification && currentNotification.parentNode) {
     document.body.removeChild(currentNotification);
   }
 
-  const notification = document.createElement("div");
+  const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.textContent = message;
   currentNotification = notification;
 
   document.body.appendChild(notification);
-  setTimeout(() => notification.classList.add("show"), 100);
+  setTimeout(() => notification.classList.add('show'), 100);
   setTimeout(() => {
-    notification.classList.remove("show");
+    notification.classList.remove('show');
     setTimeout(() => {
       if (notification.parentNode) {
         document.body.removeChild(notification);
@@ -631,30 +569,27 @@ function showNotification(message, type = "info") {
 
 function addToRecentFiles(filename, size) {
   const file = { name: filename, size: size, date: new Date().toISOString() };
-  recentFiles = recentFiles.filter((f) => f.name !== filename);
+  recentFiles = recentFiles.filter(f => f.name !== filename);
   recentFiles.unshift(file);
   recentFiles = recentFiles.slice(0, 10);
-  localStorage.setItem("utopia-recent-files", JSON.stringify(recentFiles));
+  localStorage.setItem('utopia-recent-files', JSON.stringify(recentFiles));
   updateRecentFilesList();
 }
 
 function updateRecentFilesList() {
-  const recentFilesEl = document.getElementById("recentFiles");
+  const recentFilesEl = document.getElementById('recentFiles');
   if (recentFiles.length === 0) {
     recentFilesEl.innerHTML = '<div class="empty-state">No recent files</div>';
     return;
   }
 
-  recentFilesEl.innerHTML = "";
-  recentFiles.forEach((file) => {
-    const item = document.createElement("div");
-    item.className = "recent-file-item";
-    const sizeStr =
-      file.size < 1024
-        ? `${file.size} B`
-        : file.size < 1024 * 1024
-          ? `${(file.size / 1024).toFixed(1)} KB`
-          : `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+  recentFilesEl.innerHTML = '';
+  recentFiles.forEach(file => {
+    const item = document.createElement('div');
+    item.className = 'recent-file-item';
+    const sizeStr = file.size < 1024 ? `${file.size} B` :
+                   file.size < 1024 * 1024 ? `${(file.size / 1024).toFixed(1)} KB` :
+                   `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
     const date = new Date(file.date).toLocaleDateString();
     item.innerHTML = `
       <div class="recent-file-name">${file.name}</div>
@@ -665,8 +600,8 @@ function updateRecentFilesList() {
 }
 
 function loadStlBuffers(buffers, names, fileSizes) {
-  const loadingIndicator = document.getElementById("loadingIndicator");
-  loadingIndicator.style.display = "flex";
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  loadingIndicator.style.display = 'flex';
 
   setTimeout(() => {
     try {
@@ -685,33 +620,31 @@ function loadStlBuffers(buffers, names, fileSizes) {
           mesh.userData.fileSize = fileSizes[index];
         }
 
-        const name = names[index] || "STL object";
+        const name = names[index] || 'STL object';
         addObject(mesh, name, true);
       });
     } catch (error) {
-      console.error("Error loading STL files:", error);
-      showNotification("❌ Error loading STL files", "error");
+      console.error('Error loading STL files:', error);
+      showNotification('❌ Error loading STL files', 'error');
     } finally {
-      loadingIndicator.style.display = "none";
+      loadingIndicator.style.display = 'none';
     }
   }, 100);
 }
 
 function handleFiles(files) {
-  const stlFiles = Array.from(files).filter((file) =>
-    file.name.toLowerCase().endsWith(".stl"),
+  const stlFiles = Array.from(files).filter(file =>
+    file.name.toLowerCase().endsWith('.stl')
   );
 
   if (stlFiles.length === 0) {
-    showNotification("Please select STL files only", "warning");
+    showNotification('Please select STL files only', 'warning');
     return;
   }
 
-  const oversizedFiles = stlFiles.filter(
-    (file) => file.size > 50 * 1024 * 1024,
-  );
+  const oversizedFiles = stlFiles.filter(file => file.size > 50 * 1024 * 1024);
   if (oversizedFiles.length > 0) {
-    showNotification("Files too large (max 50MB each)", "error");
+    showNotification('Files too large (max 50MB each)', 'error');
     return;
   }
 
@@ -722,7 +655,7 @@ function handleFiles(files) {
 
   stlFiles.forEach((file, index) => {
     const reader = new FileReader();
-    reader.addEventListener("load", (e) => {
+    reader.addEventListener('load', (e) => {
       buffers[index] = e.target.result;
       names[index] = file.name;
       fileSizes[index] = file.size;
@@ -758,15 +691,73 @@ function getIntersectedObject() {
   return hits.length ? hits[0] : null;
 }
 
-// Camera view functions
 function setCameraView(x, y, z, name) {
   if (camera && controls) {
     camera.position.set(x, y, z);
     controls.target.set(0, 0, 0);
     controls.update();
-    const cameraInfo = document.getElementById("cameraInfo");
+    const cameraInfo = document.getElementById('cameraInfo');
     if (cameraInfo) cameraInfo.textContent = `Camera: ${name}`;
   }
+}
+
+function initThreeJS() {
+  if (scene) return; // Already initialized
+
+  const viewerContainer = canvas.parentElement;
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x151515);
+
+  const fov = 45;
+  camera = new THREE.PerspectiveCamera(
+    fov,
+    viewerContainer.clientWidth / viewerContainer.clientHeight,
+    0.1,
+    2000,
+  );
+  camera.position.set(120, 120, 120);
+
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(viewerContainer.clientWidth, viewerContainer.clientHeight, false);
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+  scene.add(ambientLight);
+
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x222233, 0.6);
+  hemiLight.position.set(0, 1, 0);
+  scene.add(hemiLight);
+
+  const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+  dirLight1.position.set(1, 1, 1);
+  scene.add(dirLight1);
+
+  const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
+  dirLight2.position.set(-1, 0.5, -0.5);
+  scene.add(dirLight2);
+
+  const grid = new THREE.GridHelper(400, 40, 0x444444, 0x222222);
+  grid.position.y = -0.01;
+  scene.add(grid);
+
+  // Enhanced controls with faster zoom
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.target.set(0, 0, 0);
+  controls.enableZoom = true;
+  controls.zoomSpeed = 2.0; // 2x faster zoom
+  controls.enableRotate = true;
+  controls.rotateSpeed = 1.0;
+  controls.enablePan = true;
+  controls.panSpeed = 1.0;
+
+  loader = new STLLoader();
+
+  console.log('Three.js initialized');
+  animate();
 }
 
 function animate() {
@@ -789,411 +780,9 @@ function onWindowResize() {
   renderer.setSize(width, height, false);
 }
 
-// Setup all event listeners (only once)
 function setupEventListeners() {
   if (isInitialized) return;
   isInitialized = true;
 
-  console.log("Setting up event listeners...");
-
   // Dashboard navigation
-  document.getElementById("startButton").addEventListener("click", () => {
-    document.getElementById("dashboard").style.display = "none";
-    document.getElementById("workspace").style.display = "flex";
-    setTimeout(initThreeJS, 100);
-  });
-
-  document.getElementById("loadSamplesButton").addEventListener("click", () => {
-    document.getElementById("dashboard").style.display = "none";
-    document.getElementById("workspace").style.display = "flex";
-    setTimeout(() => {
-      initThreeJS();
-      // Add sample objects
-      setTimeout(() => {
-        ["box", "sphere", "cylinder"].forEach((shape, index) => {
-          const geometry = createPrimitiveGeometry(shape);
-          const baseColor = new THREE.Color().setHSL(Math.random(), 0.6, 0.5);
-          const material = createMaterial(baseColor);
-          const mesh = new THREE.Mesh(geometry, material);
-          mesh.position.set((index - 1) * 30, 0, 0);
-          addObject(
-            mesh,
-            `Sample ${shape.charAt(0).toUpperCase() + shape.slice(1)}`,
-          );
-        });
-      }, 500);
-    }, 100);
-  });
-
-  document.getElementById("backToDashboard").addEventListener("click", () => {
-    document.getElementById("workspace").style.display = "none";
-    document.getElementById("dashboard").style.display = "flex";
-  });
-
-  // Sidebar sections
-  document.querySelectorAll(".section-header").forEach((header) => {
-    header.addEventListener("click", () => {
-      const section = header.dataset.section;
-      const content = document.querySelector(`[data-content="${section}"]`);
-      const toggle = header.querySelector(".section-toggle");
-      const isExpanded = content.classList.contains("expanded");
-
-      if (isExpanded) {
-        content.classList.remove("expanded");
-        toggle.textContent = "▼";
-      } else {
-        content.classList.add("expanded");
-        toggle.textContent = "▲";
-      }
-    });
-  });
-
-  // File input
-  fileInput.addEventListener("change", (event) => {
-    const files = Array.from(event.target.files || []);
-    if (!files.length) return;
-    handleFiles(files);
-  });
-
-  // Drag and drop
-  document.getElementById("dragDropZone").addEventListener("click", () => {
-    fileInput.click();
-  });
-
-  document.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    const workspace = document.getElementById("workspace");
-    const dragOverlay = document.getElementById("dragOverlay");
-    if (workspace.style.display !== "none" && dragOverlay) {
-      dragOverlay.style.display = "flex";
-      dragOverlay.classList.add("active");
-    }
-  });
-
-  document.addEventListener("dragleave", (e) => {
-    if (!e.relatedTarget || !document.contains(e.relatedTarget)) {
-      const dragOverlay = document.getElementById("dragOverlay");
-      if (dragOverlay) {
-        dragOverlay.style.display = "none";
-        dragOverlay.classList.remove("active");
-      }
-    }
-  });
-
-  document.addEventListener("drop", (e) => {
-    e.preventDefault();
-    const dragOverlay = document.getElementById("dragOverlay");
-    if (dragOverlay) {
-      dragOverlay.style.display = "none";
-      dragOverlay.classList.remove("active");
-    }
-    if (e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
-    }
-  });
-
-  // Object creation
-  addPrimitiveButton.addEventListener("click", () => {
-    const type = primitiveTypeSelect.value;
-    const geometry = createPrimitiveGeometry(type);
-    const baseColor = new THREE.Color().setHSL(Math.random(), 0.5, 0.55);
-    const material = createMaterial(baseColor);
-    const mesh = new THREE.Mesh(geometry, material);
-
-    mesh.position.set(
-      (Math.random() - 0.5) * 40,
-      10,
-      (Math.random() - 0.5) * 40,
-    );
-
-    const prettyName = `${type.charAt(0).toUpperCase()}${type.slice(1)} ${nextId}`;
-    addObject(mesh, prettyName);
-  });
-
-  generateSampleButton.addEventListener("click", () => {
-    const vertices = [
-      0, 0, 0, 20, 0, 0, 10, 0, 17.32, 0, 0, 0, 10, 0, 17.32, -10, 0, 17.32, 0,
-      0, 0, -10, 0, 17.32, -20, 0, 0, 0, 0, 0, -20, 0, 0, 10, 0, -17.32, 0, 0,
-      0, 10, 0, -17.32, 20, 0, 0, 10, 15, 5.77, 20, 0, 0, 10, 0, 17.32, 10, 15,
-      5.77, 10, 0, 17.32, -10, 0, 17.32, 10, 15, 5.77, -10, 0, 17.32, -20, 0, 0,
-      10, 15, 5.77, -20, 0, 0, 10, 0, -17.32, 10, 15, 5.77, 10, 0, -17.32, 20,
-      0, 0,
-    ];
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(vertices, 3),
-    );
-    geometry.computeVertexNormals();
-
-    const baseColor = new THREE.Color().setHSL(Math.random(), 0.6, 0.5);
-    const material = createMaterial(baseColor);
-    const mesh = new THREE.Mesh(geometry, material);
-
-    mesh.position.set(
-      (Math.random() - 0.5) * 30,
-      8,
-      (Math.random() - 0.5) * 30,
-    );
-
-    addObject(mesh, `Sample Pyramid ${nextId}`);
-  });
-
-  // Object controls
-  colorInput.addEventListener("input", () => {
-    const selected = objects.find((o) => o.id === selectedId);
-    if (!selected) return;
-    const material = selected.mesh.material;
-    if (material && material.color) {
-      material.color.set(colorInput.value);
-    }
-  });
-
-  scaleInput.addEventListener("input", () => {
-    const selected = objects.find((o) => o.id === selectedId);
-    if (!selected) return;
-    const s = parseFloat(scaleInput.value) || 1;
-    selected.mesh.scale.set(s, s, s);
-    scaleValue.textContent = s.toFixed(1);
-    updateSelectionUI();
-  });
-
-  resetButton.addEventListener("click", () => {
-    const selected = objects.find((o) => o.id === selectedId);
-    const box = selected ? getObjectBox(selected.mesh) : getSceneBox();
-    frameBox(box);
-    if (box) {
-      updateStatsFromBox(box);
-    }
-  });
-
-  deleteButton.addEventListener("click", () => {
-    const index = objects.findIndex((o) => o.id === selectedId);
-    if (index === -1) return;
-
-    const obj = objects[index];
-    const mesh = obj.mesh;
-    scene.remove(mesh);
-
-    if (mesh.geometry && typeof mesh.geometry.dispose === "function") {
-      mesh.geometry.dispose();
-    }
-    if (mesh.material) {
-      if (Array.isArray(mesh.material)) {
-        mesh.material.forEach(
-          (m) => m && typeof m.dispose === "function" && m.dispose(),
-        );
-      } else if (typeof mesh.material.dispose === "function") {
-        mesh.material.dispose();
-      }
-    }
-
-    objects.splice(index, 1);
-
-    if (objects.length === 0) {
-      selectedId = null;
-    } else {
-      const nextIndex = Math.min(index, objects.length - 1);
-      selectedId = objects[nextIndex].id;
-    }
-
-    refreshObjectList();
-    updateSelectionUI();
-    showNotification("🗑️ Object deleted", "info");
-  });
-
-  exportButton.addEventListener("click", () => {
-    if (!objects.length) return;
-
-    const defaultName = "scene";
-    const inputName = window.prompt(
-      "File name for STL (without extension):",
-      defaultName,
-    );
-    if (!inputName) return;
-
-    const group = new THREE.Group();
-    objects.forEach((obj) => {
-      if (obj.mesh) {
-        group.add(obj.mesh);
-      }
-    });
-
-    const exporter = new STLExporter();
-    const result = exporter.parse(group);
-
-    const blob = new Blob([result], { type: "application/vnd.ms-pki.stl" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    const safeName = inputName.replace(/[^a-z0-9_\-]/gi, "_") || defaultName;
-    a.download = `${safeName}.stl`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showNotification("💾 STL exported", "success");
-  });
-
-  // Rotation buttons
-  rotateUpButton.addEventListener("click", () => {
-    const selected = objects.find((o) => o.id === selectedId);
-    if (!selected) return;
-    selected.mesh.rotation.x -= Math.PI / 18;
-    const box = getObjectBox(selected.mesh);
-    frameBox(box);
-  });
-
-  rotateDownButton.addEventListener("click", () => {
-    const selected = objects.find((o) => o.id === selectedId);
-    if (!selected) return;
-    selected.mesh.rotation.x += Math.PI / 18;
-    const box = getObjectBox(selected.mesh);
-    frameBox(box);
-  });
-
-  rotateLeftButton.addEventListener("click", () => {
-    const selected = objects.find((o) => o.id === selectedId);
-    if (!selected) return;
-    selected.mesh.rotation.y += Math.PI / 18;
-    const box = getObjectBox(selected.mesh);
-    frameBox(box);
-  });
-
-  rotateRightButton.addEventListener("click", () => {
-    const selected = objects.find((o) => o.id === selectedId);
-    if (!selected) return;
-    selected.mesh.rotation.y -= Math.PI / 18;
-    const box = getObjectBox(selected.mesh);
-    frameBox(box);
-  });
-
-  // Camera view buttons
-  const viewButtons = {
-    viewTop: () => setCameraView(0, 150, 0, "Top"),
-    viewFront: () => setCameraView(0, 0, 150, "Front"),
-    viewRight: () => setCameraView(150, 0, 0, "Right"),
-    viewLeft: () => setCameraView(-150, 0, 0, "Left"),
-    viewBack: () => setCameraView(0, 0, -150, "Back"),
-    viewBottom: () => setCameraView(0, -150, 0, "Bottom"),
-    viewIso: () => setCameraView(105, 105, 105, "Isometric"),
-    viewHome: () => setCameraView(120, 120, 120, "Home"),
-    resetCamera: () => setCameraView(120, 120, 120, "Reset"),
-  };
-
-  Object.entries(viewButtons).forEach(([id, handler]) => {
-    const button = document.getElementById(id);
-    if (button) {
-      button.addEventListener("click", handler);
-    }
-  });
-
-  // Tool mode selection
-  toolModeInputs.forEach((input) => {
-    input.addEventListener("change", () => {
-      if (input.checked) {
-        currentToolMode = input.value;
-        isDragging = false;
-        controls.enabled = currentToolMode === "select";
-      }
-    });
-  });
-
-  // Mouse interaction for object manipulation
-  canvas.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0) return;
-    updateMouseFromEvent(event);
-
-    if (currentToolMode === "select") {
-      const hit = getIntersectedObject();
-      if (hit) {
-        const mesh = hit.object;
-        const obj = objects.find((o) => o.mesh === mesh);
-        if (obj) {
-          selectedId = obj.id;
-          refreshObjectList();
-          updateSelectionUI();
-          dragMesh = mesh;
-
-          const box = getObjectBox(mesh);
-          if (box) {
-            const size = new THREE.Vector3();
-            const center = new THREE.Vector3();
-            box.getSize(size);
-            box.getCenter(center);
-            const offsetY = hit.point.y - center.y;
-            const h = size.y || 1;
-            verticalDragFactor = 1 + Math.min(2, Math.abs(offsetY) / h);
-          } else {
-            verticalDragFactor = 1;
-          }
-
-          isVerticalDrag = event.shiftKey && !event.ctrlKey;
-          isRotateDrag = event.shiftKey && event.ctrlKey;
-          lastClientY = event.clientY;
-          lastClientX = event.clientX;
-
-          if (!isVerticalDrag && !isRotateDrag) {
-            const point = intersectGround();
-            if (point) {
-              dragOffset.copy(point).sub(mesh.position);
-              isDragging = true;
-              controls.enabled = false;
-            }
-          } else {
-            isDragging = true;
-            controls.enabled = false;
-          }
-        }
-      }
-    }
-  });
-
-  canvas.addEventListener("pointermove", (event) => {
-    updateMouseFromEvent(event);
-    const point = intersectGround();
-
-    if (currentToolMode === "select" && isDragging && dragMesh) {
-      if (isRotateDrag) {
-        const dx = event.clientX - lastClientX;
-        lastClientX = event.clientX;
-        dragMesh.rotation.y -= (dx * Math.PI) / 360;
-      } else if (isVerticalDrag) {
-        const dy = event.clientY - lastClientY;
-        lastClientY = event.clientY;
-        dragMesh.position.y -= dy * 0.5 * verticalDragFactor;
-      } else {
-        if (!point) return;
-        dragMesh.position.copy(point.clone().sub(dragOffset));
-      }
-      updateSelectionUI();
-    }
-  });
-
-  canvas.addEventListener("pointerup", () => {
-    if (isDragging) {
-      isDragging = false;
-      dragMesh = null;
-      isVerticalDrag = false;
-      isRotateDrag = false;
-      controls.enabled = currentToolMode === "select";
-    }
-  });
-
-  // Window resize
-  window.addEventListener("resize", onWindowResize);
-
-  console.log("All event listeners set up successfully");
-}
-
-// Initialize everything
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    setupEventListeners();
-    updateRecentFilesList();
-  });
-} else {
-  setupEventListeners();
-  updateRecentFilesList();
-}
+  startButton.addEventListener('click',
